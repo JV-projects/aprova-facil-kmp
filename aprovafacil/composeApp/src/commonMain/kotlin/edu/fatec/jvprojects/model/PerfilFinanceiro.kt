@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 data class PerfilFinanceiro(
     val rendaBruta: Double,
     val tipoRenda: TipoRenda,
-    val restricao: Boolean,
-    val dependente: Boolean
+    val possuiRestricao: Boolean,
+    val possuiDependente: Boolean? = false
 )
