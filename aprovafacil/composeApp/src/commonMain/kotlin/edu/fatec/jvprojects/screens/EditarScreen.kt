@@ -1,4 +1,4 @@
-package edu.fatec.jvprojects.composables
+package edu.fatec.jvprojects.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,34 +26,46 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import edu.fatec.jvprojects.composables.DatePicker
 import edu.fatec.jvprojects.model.Cliente
 import edu.fatec.jvprojects.model.DadosInteresse
 import edu.fatec.jvprojects.model.PerfilFinanceiro
 import edu.fatec.jvprojects.model.enums.TipoImovel
 import edu.fatec.jvprojects.model.enums.TipoRenda
 import edu.fatec.jvprojects.repository.ClienteRepository
+import edu.fatec.jvprojects.wrapper.ResultadoBusca
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.json.Json
 
 @Composable
-fun Formulario(navController: NavController) {
+fun EditarScreen(navController: NavController) {
     val repository = ClienteRepository()
     val coScope = rememberCoroutineScope()
+    val oldCliente = navController.
+    previousBackStackEntry?.
+    savedStateHandle?.
+    get<String>("cliente") ?: ""
 
-    var nomecompleto by remember { mutableStateOf("") }
-    var cpf by remember { mutableStateOf("") }
-    var celular by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var dataNasc by remember { mutableLongStateOf(Clock.System.now().toEpochMilliseconds()) }
+    val cliente = Json.decodeFromString<Cliente>(oldCliente)
+
+    var nomecompleto by remember { mutableStateOf(cliente.nome) }
+    var cpf by remember { mutableStateOf(cliente.cpf) }
+    var celular by remember { mutableStateOf(cliente.telefone) }
+    var email by remember { mutableStateOf(cliente.email) }
+    var dataNasc by remember { mutableLongStateOf(cliente.dataNascimento.atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds()) }
     var modalOpen by remember { mutableStateOf(false) }
-    var tipoRenda by remember { mutableStateOf(TipoRenda.FORMAL) }
-    var rendaBruta by remember { mutableStateOf("") }
-    var restricaoNome by remember { mutableStateOf(false) }
+    var tipoRenda by remember { mutableStateOf(cliente.perfilFinanceiro.tipoRenda) }
+    var rendaBruta by remember { mutableStateOf(cliente.perfilFinanceiro.rendaBruta.toString()) }
+    var restricaoNome by remember { mutableStateOf(cliente.perfilFinanceiro.possuiRestricao) }
     var dependentes by remember { mutableStateOf(false) }
-    var interesse by remember { mutableStateOf(TipoImovel.CASA) }
+    var interesse by remember { mutableStateOf(cliente.dadosInteresse.tipoImovel) }
     var interesseRegiao by remember { mutableStateOf("") }
 
     Box(
@@ -66,9 +78,9 @@ fun Formulario(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
-                onClick = { navController.navigate("consulta") }
+                onClick = { navController.popBackStack() }
             ) {
-                Text("Consultar cadastro")
+                Text("Voltar")
             }
 
             OutlinedTextField(
@@ -134,6 +146,7 @@ fun Formulario(navController: NavController) {
                     Text("Informal")
                 }
             }
+
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -201,8 +214,8 @@ fun Formulario(navController: NavController) {
                         false
                     )
 
-                    val cliente = Cliente(
-                        id = null,
+                    val newCliente = Cliente(
+                        id = cliente.id,
                         nome = nomecompleto,
                         cpf = cpf,
                         telefone = celular,
@@ -214,11 +227,13 @@ fun Formulario(navController: NavController) {
                     )
 
                     coScope.launch {
-                        repository.salvarCliente(cliente)
+                        repository.atualizarCliente(newCliente)
+
+                        navController.navigate("consulta")
                     }
                 }
             ) {
-                Text("Salvar e enviar")
+                Text("Salvar e atualizar")
             }
 
         }

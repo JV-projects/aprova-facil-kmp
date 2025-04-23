@@ -5,7 +5,10 @@ import edu.fatec.jvprojects.model.Cliente
 import edu.fatec.jvprojects.wrapper.ResultadoBusca
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.request.delete
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
@@ -26,22 +29,31 @@ class ClienteRepository {
         }
     }
 
-    suspend fun buscarPorCpf(cpf: String): ResultadoBusca {
+    suspend fun buscarPorCpf(cpf: String): Any {
         return try {
             val response: HttpResponse = httpClient.post("$URL/buscar") {
                 contentType(ContentType.Application.Json)
                 setBody(mapOf("cpf" to cpf))
             }
             if (response.status.isSuccess()) {
-                val cliente = response.body<Cliente>()
-                ResultadoBusca.Sucesso(cliente)
+                response.body<Cliente>()
             } else {
-                val erroTexto = response.bodyAsText()
-                ResultadoBusca.Erro("Erro: $erroTexto")
+                response.bodyAsText()
             }
 
         } catch (e: Exception) {
             ResultadoBusca.Erro("Erro inesperado: ${e.message}")
         }
+    }
+
+    suspend fun atualizarCliente(cliente: Cliente) {
+        val response: HttpResponse = httpClient.put("$URL/atualizar") {
+            contentType(ContentType.Application.Json)
+            setBody(cliente)
+        }
+    }
+
+    suspend fun deletarCliente(id: Long? = 0) {
+        val response: HttpResponse = httpClient.delete("$URL/deletar/$id")
     }
 }
