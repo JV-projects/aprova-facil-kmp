@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Cliente(
+    val id : Long? = null,
     val nome: String,
     val cpf: String,
     val telefone: String,
