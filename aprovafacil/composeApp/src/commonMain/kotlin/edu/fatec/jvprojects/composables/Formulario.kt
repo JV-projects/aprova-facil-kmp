@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import edu.fatec.jvprojects.model.Cliente
 import edu.fatec.jvprojects.model.DadosInteresse
 import edu.fatec.jvprojects.model.PerfilFinanceiro
@@ -36,7 +39,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
-fun Formulario() {
+fun Formulario(navController: NavController) {
     val repository = ClienteRepository()
     val coScope = rememberCoroutineScope()
 
@@ -58,9 +61,16 @@ fun Formulario() {
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(0.8F),
+            modifier = Modifier.fillMaxWidth(0.8F)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Button(
+                onClick = { navController.navigate("consulta") }
+            ) {
+                Text("Consultar cadastro")
+            }
+
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Nome completo") },
@@ -192,14 +202,15 @@ fun Formulario() {
                     )
 
                     val cliente = Cliente(
-                        nomecompleto,
-                        cpf,
-                        celular,
-                        email,
-                        "PENDENTE",
-                        Instant.fromEpochMilliseconds(dataNasc).toLocalDateTime(TimeZone.UTC).date,
-                        perfilFinanceiro,
-                        dadosInteresse
+                        id = null,
+                        nome = nomecompleto,
+                        cpf = cpf,
+                        telefone = celular,
+                        email = email,
+                        status = "PENDENTE",
+                        dataNascimento = Instant.fromEpochMilliseconds(dataNasc).toLocalDateTime(TimeZone.UTC).date,
+                        perfilFinanceiro = perfilFinanceiro,
+                        dadosInteresse = dadosInteresse
                     )
 
                     coScope.launch {
