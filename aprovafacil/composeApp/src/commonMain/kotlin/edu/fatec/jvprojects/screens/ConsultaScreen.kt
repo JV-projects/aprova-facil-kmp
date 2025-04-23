@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -26,7 +28,8 @@ fun ConsultaScreen(navController: NavController) {
 
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(color = Color.White),
+            .background(color = Color.White)
+            .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
@@ -45,14 +48,21 @@ fun ConsultaScreen(navController: NavController) {
             )
             Button(
                 onClick = {
-                    if (cpf.isNotBlank())
+                    if (cpf.isNotBlank()) {
                         navController.currentBackStackEntry
                             ?.savedStateHandle
                             ?.set("cpf", cpf)
-                    navController.navigate("detalhes")
+                        navController.navigate("detalhes")
+                    }
                 },
             ) {
                 Text("Buscar")
+            }
+
+            Button(
+                onClick = { navController.popBackStack() }
+            ) {
+                Text("Voltar")
             }
         }
     }
