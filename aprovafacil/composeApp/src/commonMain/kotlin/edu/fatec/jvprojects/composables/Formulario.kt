@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,171 +57,173 @@ fun Formulario(navController: NavController) {
     var interesse by remember { mutableStateOf(TipoImovel.CASA) }
     var interesseRegiao by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier.fillMaxSize().background(color = Color.White),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(0.8F)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    Surface {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Button(
-                onClick = { navController.navigate("consulta") }
-            ) {
-                Text("Consultar cadastro")
-            }
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Nome completo") },
-                value = nomecompleto,
-                onValueChange = { nomecompleto = it }
-            )
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("CPF") },
-                value = cpf,
-                onValueChange = { cpf = it }
-            )
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Celular") },
-                value = celular,
-                onValueChange = { celular = it }
-            )
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("E-mail") },
-                value = email,
-                onValueChange = { email = it }
-            )
-
-            DatePicker(
-                modifier = Modifier.align(Alignment.Start),
-                onDateSelected = {
-                    if (it != null) {
-                        dataNasc = it
-                    }
-                },
-                onDismiss = { modalOpen = !modalOpen },
-                dataSelecionada = dataNasc,
-                modalOpen = modalOpen,
-                label = "Data de nascimento:"
-            )
-
-
             Column(
-                modifier = Modifier.padding(5.dp)
-                    .align(Alignment.Start)
+                modifier = Modifier.fillMaxWidth(0.8F)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Tipo de renda:", textAlign = TextAlign.Center)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                Button(
+                    onClick = { navController.navigate("consulta") }
                 ) {
-                    RadioButton(
-                        selected = tipoRenda == TipoRenda.FORMAL,
-                        onClick = { tipoRenda = TipoRenda.FORMAL }
-                    )
-                    Text("Formal")
-
-                    RadioButton(
-                        selected = tipoRenda == TipoRenda.INFORMAL,
-                        onClick = { tipoRenda = TipoRenda.INFORMAL }
-                    )
-                    Text("Informal")
+                    Text("Consultar cadastro")
                 }
-            }
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Renda bruta") },
-                value = rendaBruta,
-                onValueChange = { rendaBruta = it }
-            )
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Nome completo") },
+                    value = nomecompleto,
+                    onValueChange = { nomecompleto = it }
+                )
 
-            Column(
-                modifier = Modifier.padding(5.dp)
-                    .align(Alignment.Start),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Restrição no nome?", textAlign = TextAlign.Center)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("CPF") },
+                    value = cpf,
+                    onValueChange = { cpf = it }
+                )
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Celular") },
+                    value = celular,
+                    onValueChange = { celular = it }
+                )
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("E-mail") },
+                    value = email,
+                    onValueChange = { email = it }
+                )
+
+                DatePicker(
+                    modifier = Modifier.align(Alignment.Start),
+                    onDateSelected = {
+                        if (it != null) {
+                            dataNasc = it
+                        }
+                    },
+                    onDismiss = { modalOpen = !modalOpen },
+                    dataSelecionada = dataNasc,
+                    modalOpen = modalOpen,
+                    label = "Data de nascimento:"
+                )
+
+
+                Column(
+                    modifier = Modifier.padding(5.dp)
+                        .align(Alignment.Start)
                 ) {
-                    RadioButton(
-                        selected = restricaoNome,
-                        onClick = { restricaoNome = true }
-                    )
-                    Text("Sim")
+                    Text("Tipo de renda:", textAlign = TextAlign.Center)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = tipoRenda == TipoRenda.FORMAL,
+                            onClick = { tipoRenda = TipoRenda.FORMAL }
+                        )
+                        Text("Formal")
 
-                    RadioButton(
-                        selected = !restricaoNome,
-                        onClick = { restricaoNome = false }
-                    )
-                    Text("Não")
-                }
-            }
-
-            Column(
-                modifier = Modifier.padding(5.dp)
-                    .align(Alignment.Start),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text("Procura que tipo de ímovel?", textAlign = TextAlign.Center)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    RadioButton(
-                        selected = interesse == TipoImovel.CASA,
-                        onClick = { interesse = TipoImovel.CASA }
-                    )
-                    Text("Casa")
-
-                    RadioButton(
-                        selected = interesse == TipoImovel.APARTAMENTO,
-                        onClick = { interesse = TipoImovel.APARTAMENTO }
-                    )
-                    Text("Apartamento")
-                }
-            }
-
-            Button(
-                onClick = {
-                    val dadosInteresse = DadosInteresse(
-                        tipoImovel = interesse,
-                    )
-
-                    val perfilFinanceiro = PerfilFinanceiro(
-                        rendaBruta.toDouble(),
-                        tipoRenda,
-                        restricaoNome,
-                        false
-                    )
-
-                    val cliente = Cliente(
-                        id = null,
-                        nome = nomecompleto,
-                        cpf = cpf,
-                        telefone = celular,
-                        email = email,
-                        status = "PENDENTE",
-                        dataNascimento = Instant.fromEpochMilliseconds(dataNasc).toLocalDateTime(TimeZone.UTC).date,
-                        perfilFinanceiro = perfilFinanceiro,
-                        dadosInteresse = dadosInteresse
-                    )
-
-                    coScope.launch {
-                        repository.salvarCliente(cliente)
+                        RadioButton(
+                            selected = tipoRenda == TipoRenda.INFORMAL,
+                            onClick = { tipoRenda = TipoRenda.INFORMAL }
+                        )
+                        Text("Informal")
                     }
                 }
-            ) {
-                Text("Salvar e enviar")
-            }
 
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Renda bruta") },
+                    value = rendaBruta,
+                    onValueChange = { rendaBruta = it }
+                )
+
+                Column(
+                    modifier = Modifier.padding(5.dp)
+                        .align(Alignment.Start),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Restrição no nome?", textAlign = TextAlign.Center)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = restricaoNome,
+                            onClick = { restricaoNome = true }
+                        )
+                        Text("Sim")
+
+                        RadioButton(
+                            selected = !restricaoNome,
+                            onClick = { restricaoNome = false }
+                        )
+                        Text("Não")
+                    }
+                }
+
+                Column(
+                    modifier = Modifier.padding(5.dp)
+                        .align(Alignment.Start),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text("Procura que tipo de ímovel?", textAlign = TextAlign.Center)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = interesse == TipoImovel.CASA,
+                            onClick = { interesse = TipoImovel.CASA }
+                        )
+                        Text("Casa")
+
+                        RadioButton(
+                            selected = interesse == TipoImovel.APARTAMENTO,
+                            onClick = { interesse = TipoImovel.APARTAMENTO }
+                        )
+                        Text("Apartamento")
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        val dadosInteresse = DadosInteresse(
+                            tipoImovel = interesse,
+                        )
+
+                        val perfilFinanceiro = PerfilFinanceiro(
+                            rendaBruta.toDouble(),
+                            tipoRenda,
+                            restricaoNome,
+                            false
+                        )
+
+                        val cliente = Cliente(
+                            id = null,
+                            nome = nomecompleto,
+                            cpf = cpf,
+                            telefone = celular,
+                            email = email,
+                            status = "PENDENTE",
+                            dataNascimento = Instant.fromEpochMilliseconds(dataNasc).toLocalDateTime(TimeZone.UTC).date,
+                            perfilFinanceiro = perfilFinanceiro,
+                            dadosInteresse = dadosInteresse
+                        )
+
+                        coScope.launch {
+                            repository.salvarCliente(cliente)
+                        }
+                    }
+                ) {
+                    Text("Salvar e enviar")
+                }
+
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,43 +27,45 @@ import androidx.navigation.NavController
 fun ConsultaScreen(navController: NavController) {
     var cpf by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-            .background(color = Color.White)
-            .verticalScroll(rememberScrollState()),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(0.8f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    Surface {
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(color = Color.White)
+                .verticalScroll(rememberScrollState()),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Text(
-                text = "Digite seu CPF para encontrar seus dados:"
-            )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("CPF") },
-                value = cpf,
-                onValueChange = { cpf = it }
-            )
-            Button(
-                onClick = {
-                    if (cpf.isNotBlank()) {
-                        navController.currentBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("cpf", cpf)
-                        navController.navigate("detalhes")
-                    }
-                },
+            Column(
+                modifier = Modifier.fillMaxWidth(0.8f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("Buscar")
-            }
+                Text(
+                    text = "Digite seu CPF para encontrar seus dados:"
+                )
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("CPF") },
+                    value = cpf,
+                    onValueChange = { cpf = it }
+                )
+                Button(
+                    onClick = {
+                        if (cpf.isNotBlank()) {
+                            navController.currentBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("cpf", cpf)
+                            navController.navigate("detalhes")
+                        }
+                    },
+                ) {
+                    Text("Buscar")
+                }
 
-            Button(
-                onClick = { navController.popBackStack() }
-            ) {
-                Text("Voltar")
+                Button(
+                    onClick = { navController.popBackStack() }
+                ) {
+                    Text("Voltar")
+                }
             }
         }
     }
