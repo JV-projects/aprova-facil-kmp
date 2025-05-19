@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,51 +54,52 @@ fun DetalheScreen(navController: NavController) {
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Surface {
         Column(
-            modifier = Modifier.fillMaxHeight()
-                .fillMaxWidth(0.8f),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { navController.popBackStack() },
+            Column(
+                modifier = Modifier.fillMaxHeight()
+                    .fillMaxWidth(0.8f),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("Voltar")
-            }
-
-            Button(
-                onClick = {
-                    val json = Json.encodeToString(clienteBusca)
-
-                    println("json encode: $json")
-
-                    navController.currentBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("cliente", json)
-                    navController.navigate("editar")
+                Button(
+                    onClick = { navController.popBackStack() },
+                ) {
+                    Text("Voltar")
                 }
-            ) {
-                Text("Editar cadastro")
-            }
 
-            Button(
-                modifier = Modifier.background(Color(0xD95656)),
-                onClick = {
-                   coScope.launch {
-                       clienteBusca?.let {
-                           repository.deletarCliente(it.id)
+                Button(
+                    onClick = {
+                        val json = Json.encodeToString(clienteBusca)
 
-                           navController.popBackStack()
-                       }
-                   }
+                        println("json encode: $json")
+
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("cliente", json)
+                        navController.navigate("editar")
+                    }
+                ) {
+                    Text("Editar cadastro")
                 }
-            ) {
-                Text("Deletar cadastro")
-            }
+
+                Button(
+                    modifier = Modifier.background(Color(0xD95656)),
+                    onClick = {
+                        coScope.launch {
+                            clienteBusca?.let {
+                                repository.deletarCliente(it.id)
+
+                                navController.popBackStack()
+                            }
+                        }
+                    }
+                ) {
+                    Text("Deletar cadastro")
+                }
 
 
 
@@ -138,4 +140,5 @@ fun DetalheScreen(navController: NavController) {
                 }
             }
         }
+    }
     }
