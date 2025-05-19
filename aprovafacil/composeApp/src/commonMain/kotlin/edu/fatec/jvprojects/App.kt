@@ -9,6 +9,7 @@ import edu.fatec.jvprojects.composables.Formulario
 import edu.fatec.jvprojects.screens.ConsultaScreen
 import edu.fatec.jvprojects.screens.DetalheScreen
 import edu.fatec.jvprojects.screens.EditarScreen
+import edu.fatec.jvprojects.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -17,7 +18,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
     val navController = rememberNavController()
 
-    MaterialTheme {
+    AppTheme {
         NavHost(navController = navController, startDestination = "formulario") {
             composable("formulario") { Formulario(navController) }
             composable("consulta") { ConsultaScreen(navController) }
