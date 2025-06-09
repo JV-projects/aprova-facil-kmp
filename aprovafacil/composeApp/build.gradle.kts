@@ -1,5 +1,5 @@
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
@@ -14,7 +14,6 @@ plugins {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -52,7 +51,9 @@ kotlin {
         }
         binaries.executable()
     }
-    
+
+
+
     sourceSets {
         val desktopMain by getting
         
@@ -62,7 +63,10 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+            implementation(compose.materialIconsExtended)
+            implementation("io.github.vinceglb:filekit-dialogs-compose:0.10.0-beta03")
+            api("io.github.kevinnzou:compose-webview-multiplatform:2.0.0")
+            implementation(libs.navigation.compose)
             implementation(libs.bundles.ktor)
             implementation(libs.kotlinx.datetime)
             implementation(compose.runtime)
@@ -75,6 +79,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
         }
         desktopMain.dependencies {
+
+
             implementation(libs.ktor.client.cio)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
