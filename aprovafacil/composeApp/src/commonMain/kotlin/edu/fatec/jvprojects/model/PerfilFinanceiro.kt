@@ -8,5 +8,7 @@ data class PerfilFinanceiro(
     val rendaBruta: Double,
     val tipoRenda: TipoRenda,
     val possuiRestricao: Boolean,
-    val possuiDependente: Boolean? = false
+    val possuiDependente: Boolean,
+    val tresAnosFgts: Boolean,
+    val usarFgts: Boolean,
 )
