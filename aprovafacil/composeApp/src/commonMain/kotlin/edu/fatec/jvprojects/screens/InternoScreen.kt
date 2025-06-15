@@ -36,7 +36,7 @@ fun InternoScreen(
 
             Button(
                 onClick = {
-                    navController.navigate(Tela.Dashboard.rota)
+                    navController.navigate(Tela.Login.rota)
                 }
             ) {
                 Text("Acesso administrador")
