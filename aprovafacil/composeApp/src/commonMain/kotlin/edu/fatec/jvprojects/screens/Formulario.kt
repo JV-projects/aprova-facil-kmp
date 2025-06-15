@@ -9,16 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,25 +36,39 @@ import edu.fatec.jvprojects.model.enums.EstadoCivil
 import edu.fatec.jvprojects.model.enums.EstadoImovel
 import edu.fatec.jvprojects.model.enums.TipoImovel
 import edu.fatec.jvprojects.model.enums.TipoRenda
-import edu.fatec.jvprojects.viewModel.ClienteViewModel
+import edu.fatec.jvprojects.repository.ClienteRepository
 import edu.fatec.jvprojects.wrapper.Resultado
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarScreen(
-    navController: NavController,
-    snackbarState: SnackbarHostState,
-    clienteViewModel: ClienteViewModel
-) {
+fun Formulario(navController: NavController, snackbarState: SnackbarHostState) {
+    val repository = ClienteRepository()
+    val coScope = rememberCoroutineScope()
 
-    val uiState = clienteViewModel.uiState.collectAsState()
-
+    var id by remember { mutableStateOf(0L) }
+    var nomecompleto by remember { mutableStateOf("") }
+    var cpf by remember { mutableStateOf("") }
+    var celular by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var dataNasc by remember { mutableLongStateOf(Clock.System.now().toEpochMilliseconds()) }
     var modalOpen by remember { mutableStateOf(false) }
     var options = remember { mutableStateOf(EstadoCivil.entries.map { it.name }) }
-    var expanded = remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+    var estadoCivil = remember { mutableStateOf(EstadoCivil.SOLTEIRO) }
+    var rendaBruta by remember { mutableStateOf("") }
+    var tipoRenda by remember { mutableStateOf(TipoRenda.FORMAL) }
+    var possuiRestricao by remember { mutableStateOf(false) }
+    var possuiDependentes by remember { mutableStateOf(false) }
+    var tresAnosFgts by remember { mutableStateOf(false) }
+    var usarFgts by remember { mutableStateOf(false) }
+    var tipoImovel by remember { mutableStateOf(TipoImovel.CASA) }
+    var estadoImovel by remember { mutableStateOf(EstadoImovel.NOVO) }
 
     Surface {
         Box(
@@ -64,56 +80,60 @@ fun EditarScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
+                Button(
+                    onClick = { navController.navigate("consulta") }
+                ) {
+                    Text("Consultar cadastro")
+                }
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Nome completo") },
-                    value = uiState.value.nomeCompleto,
-                    onValueChange = { clienteViewModel.onNomeCompletoChange(it) }
+                    value = nomecompleto,
+                    onValueChange = { nomecompleto = it }
                 )
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("CPF") },
-                    value = uiState.value.cpf,
-                    onValueChange = { clienteViewModel.onCpfChange(it) }
+                    value = cpf,
+                    onValueChange = { cpf = it }
                 )
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Celular") },
-                    value = uiState.value.celular,
-                    onValueChange = { clienteViewModel.onCelularChange(it) }
+                    value = celular,
+                    onValueChange = { celular = it }
                 )
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("E-mail") },
-                    value = uiState.value.email,
-                    onValueChange = { clienteViewModel.onEmailChange(it) }
+                    value = email,
+                    onValueChange = { email = it }
                 )
 
                 DatePicker(
                     modifier = Modifier.align(Alignment.Start),
                     onDateSelected = {
                         if (it != null) {
-                            clienteViewModel.onDataNascimentoChange(it)
+                            dataNasc = it
                         }
                     },
                     onDismiss = { modalOpen = !modalOpen },
-                    dataSelecionada = uiState.value.dataNascimentoMillis,
+                    dataSelecionada = dataNasc,
                     modalOpen = modalOpen,
                     label = "Data de nascimento:"
                 )
-
+                
                 Column(modifier = Modifier.align(Alignment.Start)) {
                     Select(
                         options.value,
-                        expanded.value,
-                        { expanded.value = it },
-                        uiState.value.estadoCivil.toString(),
-                        { clienteViewModel.onEstadoCivilChange(EstadoCivil.valueOf(it)) }
+                        expanded,
+                        {  expanded = it },
+                        estadoCivil.value.toString(),
+                        { estadoCivil.value = EstadoCivil.valueOf(it) }
                     )
                 }
 
@@ -126,14 +146,14 @@ fun EditarScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = uiState.value.tipoRenda == TipoRenda.FORMAL,
-                            onClick = { clienteViewModel.onTipoRendaChange(TipoRenda.FORMAL) }
+                            selected = tipoRenda == TipoRenda.FORMAL,
+                            onClick = { tipoRenda = TipoRenda.FORMAL }
                         )
                         Text("Formal")
 
                         RadioButton(
-                            selected = uiState.value.tipoRenda == TipoRenda.AUTONOMO,
-                            onClick = { clienteViewModel.onTipoRendaChange(TipoRenda.AUTONOMO) }
+                            selected = tipoRenda == TipoRenda.AUTONOMO,
+                            onClick = { tipoRenda = TipoRenda.AUTONOMO }
                         )
                         Text("Autônomo")
                     }
@@ -142,8 +162,8 @@ fun EditarScreen(
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Renda bruta") },
-                    value = uiState.value.rendaBruta,
-                    onValueChange = { clienteViewModel.onRendaBrutaChange(it) }
+                    value = rendaBruta,
+                    onValueChange = { rendaBruta = it }
                 )
 
 
@@ -157,14 +177,14 @@ fun EditarScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = uiState.value.possuiRestricao,
-                            onClick = { clienteViewModel.onPossuiRestricaoChange(true) }
+                            selected = possuiRestricao,
+                            onClick = { possuiRestricao = true }
                         )
                         Text("Sim")
 
                         RadioButton(
-                            selected = !uiState.value.possuiRestricao,
-                            onClick = { clienteViewModel.onPossuiRestricaoChange(false) }
+                            selected = !possuiRestricao,
+                            onClick = { possuiRestricao = false }
                         )
                         Text("Não")
                     }
@@ -180,14 +200,14 @@ fun EditarScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = uiState.value.possuiDependente,
-                            onClick = { clienteViewModel.onPossuiDependentesChange(true) }
+                            selected = possuiDependentes,
+                            onClick = { possuiDependentes = true }
                         )
                         Text("Sim")
 
                         RadioButton(
-                            selected = !uiState.value.possuiDependente,
-                            onClick = { clienteViewModel.onPossuiDependentesChange(false) }
+                            selected = !possuiDependentes,
+                            onClick = { possuiDependentes = false }
                         )
                         Text("Não")
                     }
@@ -203,14 +223,14 @@ fun EditarScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = uiState.value.usarFgts,
-                            onClick = { clienteViewModel.onUsarFgtsChange(true) }
+                            selected = usarFgts,
+                            onClick = { usarFgts = true }
                         )
                         Text("Sim")
 
                         RadioButton(
-                            selected = !uiState.value.usarFgts,
-                            onClick = { clienteViewModel.onUsarFgtsChange(false) }
+                            selected = !usarFgts,
+                            onClick = { usarFgts = false }
                         )
                         Text("Não")
                     }
@@ -226,14 +246,14 @@ fun EditarScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = uiState.value.tresAnosFgts,
-                            onClick = { clienteViewModel.onTresAnosFgtsChange(true) }
+                            selected = tresAnosFgts,
+                            onClick = { tresAnosFgts = true }
                         )
                         Text("Sim")
 
                         RadioButton(
-                            selected = !uiState.value.tresAnosFgts,
-                            onClick = { clienteViewModel.onTresAnosFgtsChange(false) }
+                            selected = !tresAnosFgts,
+                            onClick = { tresAnosFgts = false }
                         )
                         Text("Não")
                     }
@@ -249,14 +269,14 @@ fun EditarScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = uiState.value.tipoImovel == TipoImovel.CASA,
-                            onClick = { clienteViewModel.onTipoImovelChange(TipoImovel.CASA) }
+                            selected = tipoImovel == TipoImovel.CASA,
+                            onClick = { tipoImovel = TipoImovel.CASA }
                         )
                         Text("Casa")
 
                         RadioButton(
-                            selected = uiState.value.tipoImovel == TipoImovel.APARTAMENTO,
-                            onClick = { clienteViewModel.onTipoImovelChange(TipoImovel.APARTAMENTO) }
+                            selected = tipoImovel == TipoImovel.APARTAMENTO,
+                            onClick = { tipoImovel = TipoImovel.APARTAMENTO }
                         )
                         Text("Apartamento")
                     }
@@ -272,25 +292,71 @@ fun EditarScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = uiState.value.estadoImovel == EstadoImovel.NOVO,
-                            onClick = {  clienteViewModel.onEstadoImovelChange(EstadoImovel.NOVO) }
+                            selected = estadoImovel == EstadoImovel.NOVO,
+                            onClick = { estadoImovel = EstadoImovel.NOVO }
                         )
                         Text("Novo")
 
                         RadioButton(
-                            selected = uiState.value.estadoImovel == EstadoImovel.USADO,
-                            onClick = { clienteViewModel.onEstadoImovelChange(EstadoImovel.USADO) }
+                            selected = estadoImovel == EstadoImovel.USADO,
+                            onClick = { estadoImovel = EstadoImovel.USADO }
                         )
                         Text("Velho")
                     }
                 }
 
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Informe o CPF do participante para somar renda") },
-                    value = uiState.value.participante,
-                    onValueChange = { clienteViewModel.onParticipanteChange(it) }
-                )
+                Button(
+                    onClick = {
+                        val dadosInteresse = DadosInteresse(
+                            tipoImovel,
+                            estadoImovel
+                        )
+
+                        val perfilFinanceiro = PerfilFinanceiro(
+                            rendaBruta.toDouble(),
+                            tipoRenda,
+                            possuiRestricao,
+                            possuiDependentes,
+                            tresAnosFgts,
+                            usarFgts
+                        )
+
+                        val cliente = Cliente(
+                            id = null,
+                            nome = nomecompleto,
+                            cpf = cpf,
+                            telefone = celular,
+                            email = email,
+                            statusCadastro = "PENDENTE",
+                            dataNascimento = Instant.
+                            fromEpochMilliseconds(dataNasc).toLocalDateTime(TimeZone.UTC).date,
+                            estadoCivil = estadoCivil.value,
+                            perfilFinanceiro = perfilFinanceiro,
+                            dadosInteresse = dadosInteresse,
+                            documentos = mapOf(),
+                            participante = "",
+                        )
+
+                        coScope.launch {
+                            when (val resposta = repository.salvarCliente(cliente)) {
+                                is Resultado.Sucesso -> {
+                                    id = resposta.data
+                                    snackbarState.showSnackbar(
+                                        message = "Cliente com id: " + resposta.data.toString() +
+                                        " salvo com sucesso"
+                                    )
+                                }
+                                is Resultado.Erro -> {
+                                    snackbarState.showSnackbar(
+                                        message = resposta.error.mensagem
+                                    )
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    Text("Salvar e enviar")
+                }
 
             }
         }

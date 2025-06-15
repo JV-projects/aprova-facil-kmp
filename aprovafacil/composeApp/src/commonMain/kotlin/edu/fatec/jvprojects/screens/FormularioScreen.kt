@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import edu.fatec.jvprojects.composables.DatePicker
 import edu.fatec.jvprojects.composables.Select
@@ -34,21 +38,27 @@ import edu.fatec.jvprojects.model.enums.EstadoCivil
 import edu.fatec.jvprojects.model.enums.EstadoImovel
 import edu.fatec.jvprojects.model.enums.TipoImovel
 import edu.fatec.jvprojects.model.enums.TipoRenda
+import edu.fatec.jvprojects.repository.ClienteRepository
+import edu.fatec.jvprojects.viewModel.ClienteFormEvent
 import edu.fatec.jvprojects.viewModel.ClienteViewModel
 import edu.fatec.jvprojects.wrapper.Resultado
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.exp
 
 @Composable
-fun EditarScreen(
+fun FormularioScreen(
     navController: NavController,
     snackbarState: SnackbarHostState,
+    clienteRepository: ClienteRepository = remember { ClienteRepository() },
     clienteViewModel: ClienteViewModel
 ) {
-
     val uiState = clienteViewModel.uiState.collectAsState()
+
+    println(clienteViewModel)
+    println(uiState)
 
     var modalOpen by remember { mutableStateOf(false) }
     var options = remember { mutableStateOf(EstadoCivil.entries.map { it.name }) }
@@ -70,7 +80,7 @@ fun EditarScreen(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Nome completo") },
                     value = uiState.value.nomeCompleto,
-                    onValueChange = { clienteViewModel.onNomeCompletoChange(it) }
+                    onValueChange = { clienteViewModel.onNomeCompletoChange(it)}
                 )
 
                 OutlinedTextField(
@@ -291,6 +301,7 @@ fun EditarScreen(
                     value = uiState.value.participante,
                     onValueChange = { clienteViewModel.onParticipanteChange(it) }
                 )
+
 
             }
         }

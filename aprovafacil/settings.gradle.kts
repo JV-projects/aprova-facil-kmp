@@ -15,6 +15,7 @@ pluginManagement {
     }
 }
 
+
 dependencyResolutionManagement {
     repositories {
         google {
@@ -25,6 +26,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://jogamp.org/deployment/maven/")
     }
 }
 
