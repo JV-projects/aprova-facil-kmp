@@ -38,6 +38,7 @@ import edu.fatec.jvprojects.screens.FormularioScreen
 import edu.fatec.jvprojects.screens.HomeScreen
 import edu.fatec.jvprojects.screens.TesteScreen
 import edu.fatec.jvprojects.screens.EditarScreen
+import edu.fatec.jvprojects.screens.InternoScreen
 import edu.fatec.jvprojects.theme.AppTheme
 import edu.fatec.jvprojects.viewModel.ClienteFormEvent
 import edu.fatec.jvprojects.viewModel.ClienteViewModel
@@ -343,6 +344,10 @@ fun App() {
                             FormularioDocumentos(navController, snackbarState, documentosRepository, clienteViewModel)
                         }
                     }
+
+                    composable(Tela.Interno.rota) { InternoScreen(navController) }
+
+
 
 
                 }

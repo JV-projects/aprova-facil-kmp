@@ -9,6 +9,7 @@ sealed class Tela(val rota: String, val showBottomBar: Boolean = true) {
     object EditarDocumentos : Tela("editar_documentos")
     object Excluir : Tela("excluir")
     object Documentos : Tela("documentos")
+    object Interno : Tela("interno", false)
     object Login : Tela("login", false)
     object Dashboard : Tela("dashboard", false)
     object Cliente : Tela("cliente", false)

@@ -94,7 +94,7 @@ fun HomeScreen(
             ) {
                 Button(
                     onClick = {
-                        navController.navigate("login")
+                        navController.navigate(Tela.Interno.rota)
                     }
                 ) {
                     Text("Acesso interno")
