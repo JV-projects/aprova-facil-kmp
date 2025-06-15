@@ -9,6 +9,11 @@ sealed class Tela(val rota: String, val showBottomBar: Boolean = true) {
     object EditarDocumentos : Tela("editar_documentos")
     object Excluir : Tela("excluir")
     object Documentos : Tela("documentos")
+    object Login : Tela("login", false)
+    object Dashboard : Tela("dashboard", false)
+    object Cliente : Tela("cliente", false)
+    object Documento : Tela("documento", false)
+    object Devolutiva : Tela("devolutiva", false)
 
     companion object {
         fun fromRoute(rota: String?): Tela? = when (rota) {
@@ -20,6 +25,11 @@ sealed class Tela(val rota: String, val showBottomBar: Boolean = true) {
             Documentos.rota -> Documentos
             EditarDocumentos.rota -> EditarDocumentos
             Excluir.rota -> Excluir
+            Login.rota -> Login
+            Dashboard.rota -> Dashboard
+            Cliente.rota -> Cliente
+            Documento.rota -> Documento
+            Devolutiva.rota -> Devolutiva
             else -> null
         }
     }
