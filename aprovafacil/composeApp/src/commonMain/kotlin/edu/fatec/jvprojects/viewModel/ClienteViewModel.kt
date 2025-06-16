@@ -9,6 +9,7 @@ import edu.fatec.jvprojects.model.DadosInteresse
 import edu.fatec.jvprojects.model.PerfilFinanceiro
 import edu.fatec.jvprojects.model.enums.EstadoCivil
 import edu.fatec.jvprojects.model.enums.EstadoImovel
+import edu.fatec.jvprojects.model.enums.StatusCliente
 import edu.fatec.jvprojects.model.enums.TipoDocumento
 import edu.fatec.jvprojects.model.enums.TipoImovel
 import edu.fatec.jvprojects.model.enums.TipoRenda
@@ -254,13 +255,13 @@ class ClienteViewModel(
                 cpf = currentState.cpf,
                 telefone = currentState.celular,
                 email = currentState.email,
-                statusCadastro = "PENDENTE", // Ou algum status inicial
                 dataNascimento = Instant.fromEpochMilliseconds(currentState.dataNascimentoMillis)
                     .toLocalDateTime(TimeZone.UTC).date,
                 estadoCivil = currentState.estadoCivil,
                 perfilFinanceiro = perfilFinanceiro,
                 dadosInteresse = dadosInteresse,
                 participante = currentState.participante,
+                status = StatusCliente.PENDENTE,
                 documentos = map
             )
 
@@ -318,13 +319,13 @@ class ClienteViewModel(
                 cpf = currentState.cpf,
                 telefone = currentState.celular,
                 email = currentState.email,
-                statusCadastro = "PENDENTE", // Ou algum status inicial
                 dataNascimento = Instant.fromEpochMilliseconds(currentState.dataNascimentoMillis)
                     .toLocalDateTime(TimeZone.currentSystemDefault()).date, // Use currentSystemDefault ou UTC
                 estadoCivil = currentState.estadoCivil,
                 perfilFinanceiro = perfilFinanceiro,
                 dadosInteresse = dadosInteresse,
                 participante = currentState.participante,
+                status = StatusCliente.PENDENTE,
                 documentos = map,
             )
 
@@ -398,6 +399,7 @@ class ClienteViewModel(
             }
         }
     }
+
 
     fun deletarCliente() {
         viewModelScope.launch {

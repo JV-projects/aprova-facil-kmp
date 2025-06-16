@@ -31,7 +31,7 @@ fun StatusBadge(statusCliente: String) {
             backgroundColor = Color(0xFFFFD54F)
             displayText = status.textoExibicao
         }
-        StatusCliente.PENDENTE_DISTRIBUICAO -> {
+        StatusCliente.PENDENTE_ATENDIMENTO -> {
             backgroundColor = Color(0xFF9FA8DA)
             displayText = status.textoExibicao
         }

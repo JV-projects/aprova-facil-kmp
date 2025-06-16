@@ -75,7 +75,7 @@ fun LoginScreen(
                             is Resultado.Sucesso -> {
                                 val token = resposta.data.getValue("token")
                                 tokenService.saveToken(token)
-                                navController.navigate("teste")
+                                navController.navigate(Tela.Dashboard.rota)
                             }
                             is Resultado.Erro -> {
                                 snackbarState.showSnackbar(

@@ -2,7 +2,6 @@ package edu.fatec.jvprojects.compositionLocal
 
 import androidx.compose.runtime.staticCompositionLocalOf
 
-
 interface ITokenService {
     fun saveToken(token: String)
     fun getToken() : String
