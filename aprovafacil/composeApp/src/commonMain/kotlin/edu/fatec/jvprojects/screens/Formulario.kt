@@ -34,6 +34,7 @@ import edu.fatec.jvprojects.model.DadosInteresse
 import edu.fatec.jvprojects.model.PerfilFinanceiro
 import edu.fatec.jvprojects.model.enums.EstadoCivil
 import edu.fatec.jvprojects.model.enums.EstadoImovel
+import edu.fatec.jvprojects.model.enums.StatusCliente
 import edu.fatec.jvprojects.model.enums.TipoImovel
 import edu.fatec.jvprojects.model.enums.TipoRenda
 import edu.fatec.jvprojects.repository.ClienteRepository
@@ -327,13 +328,13 @@ fun Formulario(navController: NavController, snackbarState: SnackbarHostState) {
                             cpf = cpf,
                             telefone = celular,
                             email = email,
-                            statusCadastro = "PENDENTE",
                             dataNascimento = Instant.
                             fromEpochMilliseconds(dataNasc).toLocalDateTime(TimeZone.UTC).date,
                             estadoCivil = estadoCivil.value,
                             perfilFinanceiro = perfilFinanceiro,
                             dadosInteresse = dadosInteresse,
                             documentos = mapOf(),
+                            status = StatusCliente.PENDENTE,
                             participante = "",
                         )
 

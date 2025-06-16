@@ -13,7 +13,7 @@ sealed class Tela(val rota: String, val showBottomBar: Boolean = true) {
     object Login : Tela("login", false)
     object Dashboard : Tela("dashboard", false)
     object Cliente : Tela("cliente", false)
-    object Documento : Tela("documento", false)
+    object Documento : Tela("documento/{link}", false)
     object Devolutiva : Tela("devolutiva", false)
 
     companion object {

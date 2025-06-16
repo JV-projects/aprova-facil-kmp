@@ -14,13 +14,19 @@ fun WebViewScreen(
 ) {
     val webViewState = rememberWebViewState(url)
 
+    println("webViewUrl: $url")
+
     val text = webViewState.let {
         "${it.pageTitle ?: ""} ${it.loadingState} ${it.lastLoadedUrl ?: ""}"
     }
     Text(text)
 
-    WebView(
-        state = webViewState,
-        modifier = Modifier.fillMaxSize(),
-    )
+    if (url.length <= 8) {
+        Text("Caminho do arquivo não encontrado")
+    } else {
+        WebView(
+            state = webViewState,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
 }

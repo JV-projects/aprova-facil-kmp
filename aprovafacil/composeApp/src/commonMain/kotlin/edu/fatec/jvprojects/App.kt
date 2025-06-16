@@ -34,7 +34,9 @@ import edu.fatec.jvprojects.repository.AdministradorRepository
 import edu.fatec.jvprojects.repository.ClienteRepository
 import edu.fatec.jvprojects.repository.DocumentosRepository
 import edu.fatec.jvprojects.rotas.Tela
+import edu.fatec.jvprojects.screens.ClienteScreen
 import edu.fatec.jvprojects.screens.ConsultaScreen
+import edu.fatec.jvprojects.screens.DashboardScreen
 import edu.fatec.jvprojects.screens.DetalheScreen
 import edu.fatec.jvprojects.screens.DevolutivaScreen
 import edu.fatec.jvprojects.screens.EditarDocumentosScreen
@@ -93,6 +95,20 @@ fun App() {
         )
     }
 
+    val admGraphEntry = remember(navBackStackEntry.value) {
+        try {
+            navController.getBackStackEntry("adm_graph")
+        } catch (e: Exception) {
+            null
+        }
+    }
+    val admViewModel: ClienteViewModel? = cadastroGraphEntry?.let {
+        viewModel(
+            viewModelStoreOwner = it,
+            factory = ClienteViewModel.provideFactory(clienteRepository)
+        )
+    }
+
     println("options view model: $optionsViewModel")
     println("cadastro view model: $cadastroViewModel")
 
@@ -143,14 +159,7 @@ fun App() {
                         startDestination = "home",
                         route = "options_graph"
                     ) {
-                        composable(
-                            route = "teste/{link}",
-                            arguments = listOf(navArgument("link") { type = NavType.StringType })
-                        ) { navBackStackEntry ->
-                            val link = navBackStackEntry.arguments?.getString("link")
-                            val encoded =
-                                TesteScreen(link.toString())
-                        }
+
                         // compartilhar view model entre Formulario e Documentos
                         // compartilhar view model entre consulta, detalhes, editar
                         // passar algo para identificar qual opção foi selecionada
@@ -381,8 +390,77 @@ fun App() {
                                     snackbarState
                                 )
                             }
+                            composable(Tela.Login.rota) { LoginScreen(administradorRepository, navController, snackbarState) }
+                            composable(Tela.Dashboard.rota) {
+                                val parentEntry = remember(navBackStackEntry) {
+                                    navController.getBackStackEntry("adm_graph")
+                                }
 
+                                val clienteViewModel: ClienteViewModel = viewModel(
+                                    viewModelStoreOwner = parentEntry,
+                                    factory = ClienteViewModel.provideFactory(clienteRepository)
+                                )
+
+                                DashboardScreen(clienteViewModel, administradorRepository, navController, snackbarState)
+
+                                LaunchedEffect(clienteViewModel, snackbarState, navController) {
+                                    clienteViewModel.formEvent.collect { event ->
+                                        when (event) {
+                                            is ClienteFormEvent.ClienteCarregadoComSucesso -> {
+                                                navController.navigate(Tela.Cliente.rota)
+                                            }
+
+                                            is ClienteFormEvent.ErroAoSalvar -> {
+                                                snackbarState.showSnackbar(
+                                                    message = "Erro: ${event.mensagem}"
+                                                )
+                                            }
+
+                                            else -> {
+                                                snackbarState.showSnackbar(
+                                                    message = "Erro inesperado: $event"
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            /*
+                            * composable(
+                            route = "teste/{link}",
+                            arguments = listOf(navArgument("link") { type = NavType.StringType })
+                        ) { navBackStackEntry ->
+                            val link = navBackStackEntry.arguments?.getString("link")
+                            val encoded =
+                                TesteScreen(link.toString())
                         }
+                            * */
+
+                            composable(Tela.Cliente.rota) { navBackStackEntry ->
+                                val parentEntry = remember(navBackStackEntry) {
+                                    navController.getBackStackEntry("adm_graph")
+                                }
+
+                                val clienteViewModel: ClienteViewModel = viewModel(
+                                    viewModelStoreOwner = parentEntry,
+                                    factory = ClienteViewModel.provideFactory(clienteRepository)
+                                )
+
+                                ClienteScreen(navController, snackbarState, clienteViewModel)
+                            }
+
+                            composable(
+                                route = Tela.Documento.rota,
+                                arguments = listOf(navArgument("link") { type = NavType.StringType })
+                            ) { navBackStackEntry ->
+                                val link = navBackStackEntry.arguments?.getString("link")
+                                //TesteScreen("/home/carjooj/Documentos/repos/aprova-facil-api/documentos/1_RG")
+                                TesteScreen("file://${link.toString().replace("%2F", "/")}")
+                            }
+                        }
+
+
                     }
                 }
             },
@@ -400,6 +478,7 @@ fun App() {
     }
 
 
+
     LaunchedEffect(documentoViewModel) {
         documentoViewModel?.formEvent?.collect { event ->
             when (event) {
@@ -411,7 +490,6 @@ fun App() {
                         navController.navigate(Tela.Home.rota)
                     }
                 }
-
                 is DocumentosFormEvent.ErroAoEnviarDocumentos -> {
                     snackbarState.showSnackbar(
                         message = "Erro: ${event.mensagem}"
