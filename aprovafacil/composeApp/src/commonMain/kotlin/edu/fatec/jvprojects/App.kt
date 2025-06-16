@@ -28,7 +28,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import edu.fatec.jvprojects.composables.CustomBottomBar
-import edu.fatec.jvprojects.composables.WebViewScreen
 import edu.fatec.jvprojects.compositionLocal.LocalTokenService
 import edu.fatec.jvprojects.compositionLocal.TokenService
 import edu.fatec.jvprojects.repository.AdministradorRepository
@@ -37,14 +36,15 @@ import edu.fatec.jvprojects.repository.DocumentosRepository
 import edu.fatec.jvprojects.rotas.Tela
 import edu.fatec.jvprojects.screens.ConsultaScreen
 import edu.fatec.jvprojects.screens.DetalheScreen
+import edu.fatec.jvprojects.screens.DevolutivaScreen
 import edu.fatec.jvprojects.screens.EditarDocumentosScreen
+import edu.fatec.jvprojects.screens.EditarScreen
 import edu.fatec.jvprojects.screens.FormularioDocumentos
 import edu.fatec.jvprojects.screens.FormularioScreen
 import edu.fatec.jvprojects.screens.HomeScreen
-import edu.fatec.jvprojects.screens.TesteScreen
-import edu.fatec.jvprojects.screens.EditarScreen
 import edu.fatec.jvprojects.screens.InternoScreen
 import edu.fatec.jvprojects.screens.LoginScreen
+import edu.fatec.jvprojects.screens.TesteScreen
 import edu.fatec.jvprojects.theme.AppTheme
 import edu.fatec.jvprojects.viewModel.ClienteFormEvent
 import edu.fatec.jvprojects.viewModel.ClienteViewModel
@@ -311,7 +311,12 @@ fun App() {
                                     factory = ClienteViewModel.provideFactory(clienteRepository)
                                 )
 
-                                FormularioScreen(navController, snackbarState, clienteRepository, clienteViewModel)
+                                FormularioScreen(
+                                    navController,
+                                    snackbarState,
+                                    clienteRepository,
+                                    clienteViewModel
+                                )
                             }
                             composable(Tela.Documentos.rota) { navBackStackEntry ->
                                 val parentEntry = remember(navBackStackEntry) {
@@ -349,32 +354,50 @@ fun App() {
                                     }
                                 }
 
-                                FormularioDocumentos(navController, snackbarState, documentosRepository, clienteViewModel)
+                                FormularioDocumentos(
+                                    navController,
+                                    snackbarState,
+                                    documentosRepository,
+                                    clienteViewModel
+                                )
                             }
                         }
-
                         composable(Tela.Interno.rota) { InternoScreen(navController) }
+                        composable(Tela.Devolutiva.rota) {
+                            DevolutivaScreen(
+                                navController,
+                                snackbarState
+                            )
+                        }
 
                         navigation(
                             startDestination = Tela.Login.rota,
                             route = "adm_graph"
                         ) {
-                            composable(Tela.Login.rota) { LoginScreen(administradorRepository, navController, snackbarState) }
+                            composable(Tela.Login.rota) {
+                                LoginScreen(
+                                    administradorRepository,
+                                    navController,
+                                    snackbarState
+                                )
+                            }
 
                         }
-
-
                     }
                 }
             },
             bottomBar = {
                 if (telaAtual?.showBottomBar == true) {
-                    CustomBottomBar(navController, clienteRepository, cadastroViewModel, optionsViewModel)
+                    CustomBottomBar(
+                        navController,
+                        clienteRepository,
+                        cadastroViewModel,
+                        optionsViewModel
+                    )
                 }
             }
         )
     }
-
 
 
     LaunchedEffect(documentoViewModel) {
@@ -388,6 +411,7 @@ fun App() {
                         navController.navigate(Tela.Home.rota)
                     }
                 }
+
                 is DocumentosFormEvent.ErroAoEnviarDocumentos -> {
                     snackbarState.showSnackbar(
                         message = "Erro: ${event.mensagem}"
