@@ -181,14 +181,19 @@ fun ClienteScreen(
                 )
 
                 Text("Informe o email para qual corretor deseja destinar o atendimento desse cliente")
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     OutlinedTextField(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.weight(1f),
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email") }
                     )
-                    Text("@dominio.com")
+                    Text(
+                        modifier = Modifier.weight(0.4f),
+                        text = "@dominio.com"
+                    )
                 }
 
                 Button(
