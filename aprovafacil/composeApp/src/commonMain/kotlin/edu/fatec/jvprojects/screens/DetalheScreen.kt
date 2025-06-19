@@ -30,6 +30,7 @@ import edu.fatec.jvprojects.composables.TextWithLabel
 import edu.fatec.jvprojects.model.Cliente
 import edu.fatec.jvprojects.repository.ClienteRepository
 import edu.fatec.jvprojects.rotas.Tela
+import edu.fatec.jvprojects.utils.extensions.boolToVal
 import edu.fatec.jvprojects.utils.extensions.convertMilisToDate
 import edu.fatec.jvprojects.viewModel.ClienteViewModel
 import edu.fatec.jvprojects.wrapper.Resultado
@@ -82,19 +83,19 @@ fun DetalheScreen(
                     )
                     TextWithLabel(
                         label = "Possui restrição?",
-                        informacao = uiState.value.possuiRestricao.toString()
+                        informacao = uiState.value.possuiRestricao.boolToVal()
                     )
                     TextWithLabel(
                         label = "Possui dependente?",
-                        informacao = uiState.value.possuiDependente.toString()
+                        informacao = uiState.value.possuiDependente.boolToVal()
                     )
                     TextWithLabel(
                         label = "Usar FGTS?",
-                        informacao = uiState.value.usarFgts.toString()
+                        informacao = uiState.value.usarFgts.boolToVal()
                     )
                     TextWithLabel(
                         label = "Três anos de FGTS?",
-                        informacao = uiState.value.tresAnosFgts.toString()
+                        informacao = uiState.value.tresAnosFgts.boolToVal()
                     )
                 }
 
