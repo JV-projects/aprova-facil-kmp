@@ -26,7 +26,7 @@ class DevolutivaRepository {
     suspend fun validarCodigoDevolutiva(codigoDevolutiva: String): Resultado<ClienteDevolutivaDTO> {
         return try {
             val response: HttpResponse = httpClient.post("$baseUrl/validarCodigoDevolutiva") {
-                parameter("codigoDevolutiva", codigoDevolutiva)
+                parameter("codigoDevolutiva", codigoDevolutiva.trim())
             }.body()
 
             if (response.status.isSuccess()) {
