@@ -2,7 +2,7 @@
 
 O Aprova Fácil é uma aplicação desenvolvida para simplificar o envio de dados do cliente à imobiliária para análise de crédito. Seu objetivo é centralizar as informações em uma única plataforma, oferecer uma visualização organizada para o administrador, exibir o status de atendimento dos clientes e facilitar que o corretor registre a devolutiva do atendimento.
 
-Aprova Fácil API (backend) <a href="https://lastrearimoveis.com.br/" target="_blank">Link do repositório backend</a>
+Aprova Fácil API (backend) <a href="https://github.com/JV-projects/aprova-facil-api" target="_blank">Link do repositório backend</a>
 
 #### Nosso Cliente
 
