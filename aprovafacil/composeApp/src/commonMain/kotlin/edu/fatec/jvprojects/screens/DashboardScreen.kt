@@ -85,13 +85,13 @@ fun DashboardScreen(
                     style = MaterialTheme.typography.headlineMedium
                 )
             }
-            TabRow(
+            ScrollableTabRow(
                 modifier = Modifier.fillMaxWidth(),
                 selectedTabIndex = tabIndex
             ) {
                 tabs.forEachIndexed { index, status ->
                     Tab(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier,
                         selected = tabIndex == index,
                         onClick = {
                             tabIndex = index
