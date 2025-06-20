@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -128,11 +129,12 @@ fun DevolutivaScreen(navController: NavController, snackbar: SnackbarHostState) 
                         singleLine = true,
                         value = codigoDevoluitva,
                         onValueChange = { codigoDevoluitva = it },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f, fill = true)
                     )
 
                     Button(
-                        onClick = { enviarCodigoDevolutiva() }, modifier = Modifier.weight(0.2f)
+                        modifier = Modifier.wrapContentWidth(),
+                        onClick = { enviarCodigoDevolutiva() }
                     ) {
                         Text("Validar")
                     }
