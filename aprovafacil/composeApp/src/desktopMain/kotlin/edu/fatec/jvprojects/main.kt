@@ -23,7 +23,10 @@ import kotlin.math.max
 
 fun main() = application {
     addTempDirectoryRemovalHook()
-    Window(onCloseRequest = ::exitApplication) {
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Aprova Fácil App"
+    ) {
         var restartRequired by remember { mutableStateOf(false) }
         var downloading by remember { mutableStateOf(0F) }
         var initialized by remember { mutableStateOf(false) }
