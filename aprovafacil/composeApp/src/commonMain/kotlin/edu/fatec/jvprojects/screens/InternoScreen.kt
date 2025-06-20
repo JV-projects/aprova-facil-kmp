@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import edu.fatec.jvprojects.rotas.Tela
@@ -30,6 +31,7 @@ fun InternoScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
+                textAlign = TextAlign.Center,
                 text = "Bem vindo Administrador/Corretor",
                 style = MaterialTheme.typography.headlineMedium
             )
